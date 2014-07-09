@@ -24,6 +24,13 @@ App::uses('PagesAppModel', 'Pages.Model');
  */
 class Page extends PagesAppModel {
 
+/**
+ * Default behaviors
+ *
+ * @var array
+ */
+	public $actsAs = array('Tree');
+
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 /**
@@ -128,4 +135,5 @@ class Page extends PagesAppModel {
 			'finderQuery' => '',
 		)
 	);
+
 }

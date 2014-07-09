@@ -1,11 +1,11 @@
 var ncPutBoxId = null;
 
 NetCommonsApp.controller("PagesController", function($scope,$filter) {
-    //フレームの削除
-    $scope.deleteFrame = function (flameId) {
-        var FrameTag = "#frame-wrap-" + flameId;
-        $(FrameTag).addClass('hidden');
-    }
+	//フレームの削除
+	$scope.deleteFrame = function (flameId) {
+		var FrameTag = "#frame-wrap-" + flameId;
+		$(FrameTag).addClass('hidden');
+	}
 });
 
 NetCommonsApp.controller("PluginController", function($scope,$filter) {
@@ -16,20 +16,20 @@ NetCommonsApp.controller("PluginController", function($scope,$filter) {
 		{id:4, name:"ブログ", disabled:true}
 	];
 
-    $scope.frameId = 0;
-    $scope.blockId = 0;
-    $scope.dataId  = 0;
-    $scope.boxId   = 0;
-    $scope.pluginName = '';
-    $scope.PluginId = 0;
+	$scope.frameId = 0;
+	$scope.blockId = 0;
+	$scope.dataId  = 0;
+	$scope.boxId   = 0;
+	$scope.pluginName = '';
+	$scope.PluginId = 0;
 
-    $scope.getPluginName = function (pluginId){
-        $scope.pluginName = $filter("filter")($scope.plugins, {
-            name: pluginId
-        });
-        alert($scope.pluginName);
-        $scope.PluginId = pluginId;
-    };
+	$scope.getPluginName = function (pluginId){
+		$scope.pluginName = $filter("filter")($scope.plugins, {
+			name: pluginId
+		});
+		alert($scope.pluginName);
+		$scope.PluginId = pluginId;
+	};
 
 	$scope.snapshot = function(url) {
 		if (url) {
@@ -47,20 +47,11 @@ NetCommonsApp.controller("PluginController", function($scope,$filter) {
 
 	$scope.showPluginList = function(boxId) {
 		ncPutBoxId = boxId;
-        $scope.boxId = boxId;
+		$scope.boxId = boxId;
 	};
-
-    $scope.deleteFrame = function (flameId) {
-        /*
-        $scope.frameId = flameId ;
-        var FrameTag = "#frame-id-" + $scope.frameId;
-        $(FrameTag).addClass('hidden'); */
-    }
-
-
 });
 
 NetCommonsApp.controller("PagesBlockSetting", function($scope, $http,$filter) {
-    $scope.PluginId = 0;
-    $scope.frameId = 0;
+	$scope.PluginId = 0;
+	$scope.frameId = 0;
 });
