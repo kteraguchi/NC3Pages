@@ -49,7 +49,6 @@
 						),
 						'role' => 'form'
 					));
-<<<<<<< HEAD
 				echo $this->Form->input('Page.parent_id', array('type' => 'hidden'));
 				echo $this->Form->input(
 					'Language.0.id',
@@ -79,37 +78,6 @@
 						<?php
 							echo $this->Form->input(
 								'Page.slug',
-=======
-				echo $this->Form->input('parent_id', array('type' => 'hidden'));
-				echo $this->Form->input(
-					'Language.0.id',
-					array(
-						'type' => 'hidden',
-						'value' => $page['Language'][0]['id']
-					));
-				echo $this->Form->input(
-					'Language.0.LanguagesPage.language_id',
-					array(
-						'type' => 'hidden',
-						'value' => $page['Language'][0]['LanguagesPage']['language_id']
-					));
-			?>
-				<div class="modal-body" ng-controller="PluginController">
-					<div class="form-group">
-						<?php
-							echo $this->Form->input(
-								'Language.0.LanguagesPage.name',
-								array(
-									'label' => __('Page name'),
-									'class' => 'form-control'
-								));
-						?>
-					</div>
-					<div class="form-group">
-						<?php
-							echo $this->Form->input(
-								'slug',
->>>>>>> refs/heads/trialCode
 								array(
 									'label' => __('Slug'),
 									'class' => 'form-control'

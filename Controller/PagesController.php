@@ -72,13 +72,8 @@ class PagesController extends PagesAppController {
  */
 	public function add() {
 		if ($this->request->is('post')) {
-<<<<<<< HEAD
 			$this->Page->create();
 			$page = $this->Page->save($this->request->data);
-=======
-			$this->Page->create($this->request->data);
-			$page = $this->Page->save();
->>>>>>> refs/heads/trialCode
 			if ($page) {
 				$this->Session->setFlash(__('The page has been saved.'));
 
