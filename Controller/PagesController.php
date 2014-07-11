@@ -76,7 +76,6 @@ class PagesController extends PagesAppController {
 			$page = $this->Page->save($this->request->data);
 			if ($page) {
 				$this->Session->setFlash(__('The page has been saved.'));
-
 				return $this->redirect('/' . Configure::read('Pages.settingModeWord') . '/' . $page['Page']['permalink']);
 			} else {
 				$this->Session->setFlash(__('The page could not be saved. Please, try again.'));

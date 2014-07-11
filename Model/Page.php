@@ -86,32 +86,6 @@ class Page extends PagesAppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		),
-		'ContainersPage' => array(
-			'className' => 'Pages.ContainersPage',
-			'foreignKey' => 'page_id',
-			'dependent' => false,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
-		),
-		'BoxesPage' => array(
-			'className' => 'Pages.BoxesPage',
-			'foreignKey' => 'page_id',
-			'dependent' => false,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
 		)
 	);
 
@@ -163,6 +137,21 @@ class Page extends PagesAppModel {
 	);
 
 /**
+ * Get page ID of top.
+ *
+ * @return string
+ */
+	private function __topPageId() {
+		$topPageId = null;
+		$topPage = $this->findByLft('1', array('id'));
+		if (!empty($topPage)) {
+			$topPageId = $topPage['Page']['id'];
+		}
+
+		return $topPageId;
+	}
+
+/**
  * Override beforeValidate method
  *
  * @param array $options Options passed from Model::save().
@@ -173,20 +162,24 @@ class Page extends PagesAppModel {
 			return true;
 		}
 
-		if (empty($this->data['Page']['parent_id'])) {
-			$this->data['Page']['permalink'] = $this->data['Page']['slug'];
-			return true;
+		$targetPageId = $this->data['Page']['parent_id'];
+		if (empty($targetPageId)) {
+			$targetPageId = $this->__topPageId();
 		}
 
-		$params = array(
-			'conditions' => array('id' => $this->data['Page']['parent_id']),
-			'recursive' => -1,
-			'fields' => array('permalink')
+		$fields = array(
+			'room_id',
+			'permalink'
 		);
-		$parentPage = $this->find('first', $params);
+		$parentPage = $this->findById($targetPageId, $fields);
 		if (!empty($parentPage)) {
-			$this->data['Page']['permalink'] = $parentPage['Page']['permalink']
-												. '/' . $this->data['Page']['slug'];
+			$this->data['Page']['room_id'] = $parentPage['Page']['room_id'];
+
+			$this->data['Page']['permalink'] = '';
+			if (strlen($parentPage['Page']['permalink']) !== 0) {
+				$this->data['Page']['permalink'] = $parentPage['Page']['permalink'] . '/';
+			}
+			$this->data['Page']['permalink'] .= $this->data['Page']['slug'];
 		}
 
 		return true;
@@ -201,6 +194,35 @@ class Page extends PagesAppModel {
 	public function beforeSave($options = array()) {
 		$dataSource = $this->getDataSource();
 		$dataSource->begin();
+
+		$pageId = $this->__getPageIdOfDefaultContainersPage();
+		if (empty($pageId)) {
+			return;
+		}
+
+		$this->Container->hasAndBelongsToMany['Page']['conditions'] = array(
+			'Page.id' => $pageId
+		);
+		$params = array(
+			'conditions' => array(
+				'Container.type !=' => Configure::read('Containers.type.main')
+			)
+		);
+		$containers = $this->Container->find('all', $params);
+		$this->Container->hasAndBelongsToMany['Page']['conditions'] = '';
+		if (empty($containers)) {
+			return $this->data;
+		}
+
+		foreach ($containers as $container) {
+			$this->data['Container'][] = array(
+				'id' => $container['Container']['id'],
+				'ContainersPage' => array(
+					'container_id' => $container['Container']['id'],
+					'is_visible' => $container['Page'][0]['ContainersPage']['is_visible']
+				)
+			);
+		}
 	}
 
 /**
@@ -219,46 +241,18 @@ class Page extends PagesAppModel {
 		$data = array(
 			'Container' => array(
 				'type' => Configure::read('Containers.type.main')
+			),
+			'Page' => array(
+				array(
+					'id' => $this->getLastInsertID(),
+					'ContainersPage' => array(
+						'page_id' => $this->getLastInsertID(),
+						'is_visible' => true
+					)
+				)
 			)
 		);
 		$this->Container->save($data);
-
-		$pageId = $this->__getPageIdOfDefaultContainersPage();
-		if (empty($pageId)) {
-			return;
-		}
-
-		$params = array(
-			'conditions' => array(
-				'Page.id' => $pageId,
-				'Container.type !=' => Configure::read('Containers.type.main')
-			)
-		);
-		$containersPages = $this->ContainersPage->find('all', $params);
-		if (empty($containersPages)) {
-			return;
-		}
-
-		$this->ContainersPage->create();
-		unset($data);
-		foreach ($containersPages as $containersPage) {
-			$data[] = array(
-				'ContainersPage' => array(
-					'page_id' => $this->getLastInsertID(),
-					'container_id' => $containersPage['ContainersPage']['container_id'],
-					'is_visible' => $container['ContainersPage']['is_visible']
-				)
-			);
-		}
-		$data[] = array(
-			'ContainersPage' => array(
-				'page_id' => $this->getLastInsertID(),
-				'container_id' => $this->Container->getLastInsertID(),
-				'is_visible' => true
-			)
-		);
-		$this->ContainersPage->save($data);
-
 
 		$this->Box->create();
 		$data = array(
@@ -269,10 +263,20 @@ class Page extends PagesAppModel {
 				'room_id' => $this->data['Page']['room_id'],
 				'page_id' => $this->getLastInsertID()
 			),
-			
+			'Page' => array(
+				array(
+					'id' => $this->getLastInsertID(),
+					'BoxesPage' => array(
+						'page_id' => $this->getLastInsertID(),
+						'is_visible' => true
+					)
+				)
+			)
 		);
 		$this->Box->save($data);
 
+		$dataSource = $this->getDataSource();
+		$dataSource->commit();
 	}
 
 /**
@@ -285,18 +289,7 @@ class Page extends PagesAppModel {
 			return $this->data['Page']['parent_id'];
 		}
 
-		$topPageId = null;
-		$params = array(
-			'conditions' => array('Page.lft' => 1),
-			'recursive' => -1,
-			'fields' => array('id')
-		);
-		$topPage = $this->find('first', $params);
-		if (!empty($topPage)) {
-			$topPageId = $topPage['Page']['id'];
-		}
-
-		return $topPageId;
+		return $this->__topPageId();
 	}
 
 }
