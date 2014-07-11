@@ -9,6 +9,6 @@
  * @license http://www.netcommons.org/license.txt NetCommons License
  */
 
-Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'index', 'plugin' => 'pages'));
+//Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'index', 'plugin' => 'pages'));
 Router::connect('/' . Configure::read('Pages.settingModeWord') . '/*',
 					array('controller' => 'pages', 'action' => 'index', 'plugin' => 'pages'));

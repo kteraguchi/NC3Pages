@@ -65,6 +65,7 @@
 <?php
 if (Configure::read('Pages.isSetting')) {
 	echo $this->element('plugin_list');
+	echo $this->element('setting_menu');
 }
 ?>
 
