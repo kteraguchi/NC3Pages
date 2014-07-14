@@ -196,10 +196,17 @@ class Page extends PagesAppModel {
  * @return boolean True if validate operation should continue, false to abort
  */
 	public function beforeValidate($options = array()) {
-		if (!isset($this->data['Page']['slug'])) {
-			return true;
-		}
+		$this->__setTakingOverData();
 
+		return true;
+	}
+
+/**
+ * Set taking over data before validate.
+ *
+ * @return void
+ */
+	private function __setTakingOverData() {
 		$targetPageId = $this->data['Page']['parent_id'];
 		if (empty($targetPageId)) {
 			$targetPageId = $this->__topPageId();
@@ -209,18 +216,22 @@ class Page extends PagesAppModel {
 			'room_id',
 			'permalink'
 		);
-		$parentPage = $this->findById($targetPageId, $fields);
-		if (!empty($parentPage)) {
-			$this->data['Page']['room_id'] = $parentPage['Page']['room_id'];
-
-			$this->data['Page']['permalink'] = '';
-			if (strlen($parentPage['Page']['permalink']) !== 0) {
-				$this->data['Page']['permalink'] = $parentPage['Page']['permalink'] . '/';
-			}
-			$this->data['Page']['permalink'] .= $this->data['Page']['slug'];
+		$targetPage = $this->findById($targetPageId, $fields);
+		if (empty($targetPage)) {
+			return;
 		}
 
-		return true;
+		$this->data['Page']['room_id'] = $targetPage['Page']['room_id'];
+
+		if (!isset($this->data['Page']['slug'])) {
+			$this->data['Page']['slug'] = '';
+		}
+
+		$this->data['Page']['permalink'] = '';
+		if (strlen($targetPage['Page']['permalink']) !== 0) {
+			$this->data['Page']['permalink'] = $targetPage['Page']['permalink'] . '/';
+		}
+		$this->data['Page']['permalink'] .= $this->data['Page']['slug'];
 	}
 
 /**
