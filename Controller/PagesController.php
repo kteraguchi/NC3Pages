@@ -81,6 +81,7 @@ class PagesController extends PagesAppController {
 				$this->Session->setFlash(__('The page could not be saved. Please, try again.'));
 			}
 		}
+
 		//$parentPages = $this->Page->ParentPage->find('list');
 		//$this->set(compact('parentPages'));
 	}

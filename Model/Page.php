@@ -31,6 +31,44 @@ class Page extends PagesAppModel {
  */
 	public $actsAs = array('Tree');
 
+/**
+ * Validation rules
+ *
+ * @var array
+ */
+	public $validate = array(
+		'permalink' => array(
+			'isUnique' => array(
+				'rule' => array('isUnique'),
+				'message' => 'Permalink is already in use.',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'from' => array(
+			'datetime' => array(
+				'rule' => array('datetime'),
+				'message' => 'Please enter a valid date and time.',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'to' => array(
+			'datetime' => array(
+				'rule' => array('datetime'),
+				'message' => 'Please enter a valid date and time.',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+	);
+
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 /**
@@ -195,6 +233,20 @@ class Page extends PagesAppModel {
 		$dataSource = $this->getDataSource();
 		$dataSource->begin();
 
+		$this->__setDefaultContainers();
+
+		// TODO: It should check parts 
+		$this->data['Page']['is_published'] = true;
+
+		return true;
+	}
+
+/**
+ * Set default containers for page to $this->data
+ *
+ * @return void
+ */
+	private function __setDefaultContainers() {
 		$pageId = $this->__getPageIdOfDefaultContainersPage();
 		if (empty($pageId)) {
 			return;
@@ -211,7 +263,7 @@ class Page extends PagesAppModel {
 		$containers = $this->Container->find('all', $params);
 		$this->Container->hasAndBelongsToMany['Page']['conditions'] = '';
 		if (empty($containers)) {
-			return $this->data;
+			return;
 		}
 
 		foreach ($containers as $container) {
@@ -226,6 +278,19 @@ class Page extends PagesAppModel {
 	}
 
 /**
+ * Get page ID of default containers_pages. Return top page ID if it has no parent.
+ *
+ * @return string
+ */
+	private function __getPageIdOfDefaultContainersPage() {
+		if (!empty($this->data['Page']['parent_id'])) {
+			return $this->data['Page']['parent_id'];
+		}
+	
+		return $this->__topPageId();
+	}
+
+/**
  * Override beforeSave method.
  *
  * @param boolean $created True if this save created a new record
@@ -237,6 +302,24 @@ class Page extends PagesAppModel {
 			return;
 		}
 
+		if (!$this->__saveContainer()) {
+			return;
+		}
+
+		if (!$this->__saveBox()) {
+			return;
+		}
+		
+		$dataSource = $this->getDataSource();
+		$dataSource->commit();
+	}
+
+/**
+ * Save container data.
+ *
+ * @return mixed On success Model::$data if its not empty or true, false on failure
+ */
+	private function __saveContainer() {
 		$this->Container->create();
 		$data = array(
 			'Container' => array(
@@ -252,8 +335,16 @@ class Page extends PagesAppModel {
 				)
 			)
 		);
-		$this->Container->save($data);
 
+		return $this->Container->save($data);
+	}
+
+/**
+ * Save box data.
+ *
+ * @return mixed On success Model::$data if its not empty or true, false on failure
+ */
+	private function __saveBox() {
 		$this->Box->create();
 		$data = array(
 			'Box' => array(
@@ -273,23 +364,8 @@ class Page extends PagesAppModel {
 				)
 			)
 		);
-		$this->Box->save($data);
 
-		$dataSource = $this->getDataSource();
-		$dataSource->commit();
-	}
-
-/**
- * Get page ID of default containers_pages. Return top page ID if it has no parent.
- *
- * @return string
- */
-	private function __getPageIdOfDefaultContainersPage() {
-		if (!empty($this->data['Page']['parent_id'])) {
-			return $this->data['Page']['parent_id'];
-		}
-
-		return $this->__topPageId();
+		return $this->Box->save($data);
 	}
 
 }

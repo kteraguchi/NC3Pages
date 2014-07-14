@@ -50,7 +50,7 @@
 
 				<li>
 					<?php if (!Configure::read('Pages.isSetting')): ?>
-						<?php echo $this->Html->link(__('Setting mode on'), '/' . Configure::read('Pages.settingModeWord') . $path) ?>
+						<?php echo $this->Html->link(__('Setting mode on'), '/' . Configure::read('Pages.settingModeWord') . '/' . $path) ?>
 					<?php else: ?>
 						<?php echo $this->Html->link(__('Setting mode off'), '/' . $path) ?>
 					<?php endif; ?>

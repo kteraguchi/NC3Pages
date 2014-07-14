@@ -23,9 +23,8 @@
 	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#pageSetting">
 		<?php echo __('Page')?>
 	</button>
-	<button type="button" class="btn btn-default" ng-click="">
-		<!-- Setting Mode Off へのリンク処理 -->
-		<?php echo __('Settin mode off')?>
+	<button type="button" class="btn btn-default">
+		<?php echo $this->Html->link(__('Setting mode off'), $path) ?>
 	</button>
 </div>
 
