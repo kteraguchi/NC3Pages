@@ -14,6 +14,13 @@ App::uses('PagesAppController', 'Pages.Controller');
 class PagesController extends PagesAppController {
 
 /**
+ * uses
+ *
+ * @var array
+ */
+	public $uses = array('Pages.Page');
+
+/**
  * index method
  *
  * @throws NotFoundException
@@ -79,6 +86,8 @@ class PagesController extends PagesAppController {
 				return $this->redirect('/' . Configure::read('Pages.settingModeWord') . '/' . $page['Page']['permalink']);
 			} else {
 				$this->Session->setFlash(__('The page could not be saved. Please, try again.'));
+				// TODO: Error handling
+				return $this->redirect('/' . Configure::read('Pages.settingModeWord') . '/' . $page['Page']['permalink']);
 			}
 		}
 

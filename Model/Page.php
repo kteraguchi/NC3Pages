@@ -99,19 +99,6 @@ class Page extends PagesAppModel {
  * @var array
  */
 	public $hasMany = array(
-		'Box' => array(
-			'className' => 'Boxes.Box',
-			'foreignKey' => 'page_id',
-			'dependent' => false,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
-		),
 		'ChildPage' => array(
 			'className' => 'Page',
 			'foreignKey' => 'parent_id',
@@ -263,26 +250,26 @@ class Page extends PagesAppModel {
 			return;
 		}
 
-		$this->Container->hasAndBelongsToMany['Page']['conditions'] = array(
-			'Page.id' => $pageId
+		$this->hasAndBelongsToMany['Container']['conditions'] = array(
+			'Container.type !=' => Configure::read('Containers.type.main')
 		);
 		$params = array(
 			'conditions' => array(
-				'Container.type !=' => Configure::read('Containers.type.main')
+				'Page.id' => $pageId
 			)
 		);
-		$containers = $this->Container->find('all', $params);
-		$this->Container->hasAndBelongsToMany['Page']['conditions'] = '';
-		if (empty($containers)) {
+		$pages = $this->find('first', $params);
+		$this->hasAndBelongsToMany['Container']['conditions'] = '';
+		if (empty($pages['Container'])) {
 			return;
 		}
 
-		foreach ($containers as $container) {
+		foreach ($pages['Container'] as $container) {
 			$this->data['Container'][] = array(
-				'id' => $container['Container']['id'],
+				'id' => $container['ContainersPage']['container_id'],
 				'ContainersPage' => array(
-					'container_id' => $container['Container']['id'],
-					'is_visible' => $container['Page'][0]['ContainersPage']['is_visible']
+					'container_id' => $container['ContainersPage']['container_id'],
+					'is_visible' => $container['ContainersPage']['is_visible']
 				)
 			);
 		}

@@ -16,13 +16,10 @@ Router::connect('/' . Configure::read('Pages.settingModeWord') . '/*',
 		'action' => 'index'));
 
 Router::connect('/:plugin/:controller/:action/*',
-	array(
-		'plugin' => 'containers',
-		'controller' => 'containers',
-		'action' => 'index'));
+	array());
 
 Router::connect('/*',
 	array(
-		'plugin' => 'containers',
-		'controller' => 'containers',
+		'plugin' => 'pages',
+		'controller' => 'pages',
 		'action' => 'index'));

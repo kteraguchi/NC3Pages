@@ -2,9 +2,11 @@
 /**
  * PagesController Test Case
  *
+ * @copyright Copyright 2014, NetCommons Project
  * @author Kohei Teraguchi <kteraguchi@netcommons.org>
- * @link     http://www.netcommons.org NetCommons Project
- * @license  http://www.netcommons.org/license.txt NetCommons License
+ * @since 3.0.0.0
+ * @link http://www.netcommons.org NetCommons Project
+ * @license http://www.netcommons.org/license.txt NetCommons License
  */
 
 App::uses('PagesController', 'Controller');
@@ -13,13 +15,6 @@ App::uses('PagesController', 'Controller');
  * Summary for PagesController Test Case
  */
 class PagesControllerTest extends ControllerTestCase {
-
-/**
- * AutoMock
- *
- * @var bool
- */
-	public $autoMock = false;
 
 /**
  * Fixtures
@@ -57,6 +52,17 @@ class PagesControllerTest extends ControllerTestCase {
 	public function testIndex() {
 		$this->testAction('/', array('return' => 'view'));
 		$this->assertTextContains('<header id="container-header">', $this->view);
+		$this->assertEquals(5, count($this->vars['page']['Container']));
+	}
+
+/**
+ * testIndex method
+ *
+ * @return void
+ */
+	public function testPermalink() {
+		$this->testAction('/test', array('return' => 'vars'));
+		$this->assertEquals(2, count($this->vars['page']['Container']));
 	}
 
 /**
@@ -66,7 +72,7 @@ class PagesControllerTest extends ControllerTestCase {
  */
 	public function testIndexNotFound() {
 		$this->setExpectedException('NotFoundException');
-		$this->testAction('/pages/abc');
+		$this->testAction('/notFound');
 	}
 
 /**
@@ -77,14 +83,32 @@ class PagesControllerTest extends ControllerTestCase {
 	public function testIndexSetting() {
 		$url = '/' . Configure::read('Pages.settingModeWord') . '/';
 		$assertText = '<div class="modal fade" ' .
-						'id="pluginList" ' .
-						'tabindex="-1" ' .
-						'role="dialog" ' .
-						'aria-labelledby="pluginListLabel" ' .
-						'aria-hidden="true">';
+			'id="pluginList" ' .
+			'tabindex="-1" ' .
+			'role="dialog" ' .
+			'aria-labelledby="pluginListLabel" ' .
+			'aria-hidden="true">';
 
 		$this->testAction($url, array('return' => 'view'));
 		$this->assertTextContains($assertText, $this->view);
+	}
+
+/**
+ * testAdd method
+ *
+ * @return void
+ */
+	public function testAdd() {
+		$controller = $this->generate('Pages.Pages', array(
+			'models' => array(
+				'Pages.Page' => array('save')
+			)
+		));
+		$controller->Page->expects($this->once())
+			->method('save')
+			->will($this->returnValue(true));
+
+		$this->testAction('/pages/pages/add');
 	}
 
 }
