@@ -86,7 +86,7 @@ class PagesController extends PagesAppController {
 				return $this->redirect('/' . Configure::read('Pages.settingModeWord') . '/' . $page['Page']['permalink']);
 			} else {
 				$this->Session->setFlash(__('The page could not be saved. Please, try again.'));
-				// TODO: Error handling
+				// It should review error handling
 				return $this->redirect('/' . Configure::read('Pages.settingModeWord') . '/' . $page['Page']['permalink']);
 			}
 		}

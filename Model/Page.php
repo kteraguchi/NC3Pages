@@ -233,7 +233,7 @@ class Page extends PagesAppModel {
 
 		$this->__setDefaultContainers();
 
-		// TODO: It should check parts 
+		// It should check parts
 		$this->data['Page']['is_published'] = true;
 
 		return true;
@@ -284,7 +284,7 @@ class Page extends PagesAppModel {
 		if (!empty($this->data['Page']['parent_id'])) {
 			return $this->data['Page']['parent_id'];
 		}
-	
+
 		return $this->__topPageId();
 	}
 
@@ -307,7 +307,7 @@ class Page extends PagesAppModel {
 		if (!$this->__saveBox()) {
 			return;
 		}
-		
+
 		$dataSource = $this->getDataSource();
 		$dataSource->commit();
 	}
@@ -348,7 +348,7 @@ class Page extends PagesAppModel {
 			'Box' => array(
 				'container_id' => $this->Container->getLastInsertID(),
 				'type' => Box::TYPE_WITH_PAGE,
-				'space_id' => '1',	// TODO:: Temporary
+				'space_id' => '1',	// It should modify value
 				'room_id' => $this->data['Page']['room_id'],
 				'page_id' => $this->getLastInsertID()
 			),
