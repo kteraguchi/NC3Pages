@@ -64,56 +64,10 @@
 <div>
 <?php
 if (Configure::read('Pages.isSetting')) {
-	echo $this->element('plugin_list');
-	echo $this->element('setting_menu');
+	echo $this->element('Pages.plugin_list');
+	echo $this->element('Pages.setting_menu');
 }
+
+echo $this->element('Containers.render_containers', array('containers' => $containers));
 ?>
-
-<?php if (isset($containers[Configure::read('Containers.type.header')])): ?>
-	<!-- container-header -->
-	<header id="container-header">
-		<?php echo $this->requestAction(
-						'containers/containers/index/' . $containers[Configure::read('Containers.type.header')]['id'],
-						array('return')); ?>
-	</header>
-<?php endif; ?>
-
-<div class="container">
-
-	<?php if (isset($containers[Configure::read('Containers.type.major')])): ?>
-		<!-- container-major -->
-		<div id="container-major" class="col-sm-3">
-			<?php echo $this->requestAction(
-							'containers/containers/index/' . $containers[Configure::read('Containers.type.major')]['id'],
-							array('return')); ?>
-		</div>
-	<?php endif; ?>
-
-	<!-- container-main -->
-	<div id="container-main" class="col-sm-6" role="main">
-		<?php echo $this->requestAction(
-						'containers/containers/index/' . $containers[Configure::read('Containers.type.main')]['id'],
-						array('return')); ?>
-	</div>
-	
-	<?php if (isset($containers[Configure::read('Containers.type.minor')])): ?>
-		<!-- container-minor  -->
-		<div id="container-minor" class="col-sm-3">
-			<?php echo $this->requestAction(
-							'containers/containers/index/' . $containers[Configure::read('Containers.type.minor')]['id'],
-							array('return')); ?>
-	</div>
-	<?php endif; ?>
-
-</div>
-
-<?php if (isset($containers[Configure::read('Containers.type.footer')])): ?>
-	<!-- area-footer  -->
-	<footer id="container-footer" role="contentinfo">
-		<?php echo $this->requestAction(
-							'containers/containers/index/' . $containers[Configure::read('Containers.type.footer')]['id'],
-							array('return')); ?>
-	</footer>
-<?php endif; ?>
-</div>
 </div>

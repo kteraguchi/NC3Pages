@@ -253,6 +253,9 @@ class Page extends PagesAppModel {
 		$this->hasAndBelongsToMany['Container']['conditions'] = array(
 			'Container.type !=' => Configure::read('Containers.type.main')
 		);
+		$this->hasAndBelongsToMany['Box']['conditions'] = array(
+			'Box.type !=' => Box::TYPE_WITH_PAGE
+		);
 		$params = array(
 			'conditions' => array(
 				'Page.id' => $pageId
@@ -260,6 +263,7 @@ class Page extends PagesAppModel {
 		);
 		$pages = $this->find('first', $params);
 		$this->hasAndBelongsToMany['Container']['conditions'] = '';
+		$this->hasAndBelongsToMany['Box']['conditions'] = '';
 		if (empty($pages['Container'])) {
 			return;
 		}
@@ -270,6 +274,16 @@ class Page extends PagesAppModel {
 				'ContainersPage' => array(
 					'container_id' => $container['ContainersPage']['container_id'],
 					'is_visible' => $container['ContainersPage']['is_visible']
+				)
+			);
+		}
+
+		foreach ($pages['Box'] as $box) {
+			$this->data['Box'][] = array(
+				'id' => $box['BoxesPage']['box_id'],
+				'BoxesPage' => array(
+					'box_id' => $box['BoxesPage']['box_id'],
+					'is_visible' => $box['BoxesPage']['is_visible']
 				)
 			);
 		}

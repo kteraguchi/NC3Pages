@@ -14,16 +14,16 @@
 <link href="/net_commons/jqueryui/themes/base/minified/jquery-ui.min.css" rel="stylesheet">
 
 <div id="settingMenu"  class="panel-body btn-group-vertical" title="Setting menu">
-	<button type="button" class="btn btn-default" ng-click="changePluginSetting()">
+	<button type="button" class="btn btn-default" ng-click="changePluginSetting()" ng-disabled="true">
 		<?php echo __('Plugin')?>
 	</button>
-	<button type="button" class="btn btn-default" ng-click="changeLayoutSetting()">
+	<button type="button" class="btn btn-default" ng-click="changeLayoutSetting()" ng-disabled="true">
 		<?php echo __('Layout')?>
 	</button>
 	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#pageSetting">
 		<?php echo __('Page')?>
 	</button>
-	<button type="button" class="btn btn-default">
+	<button type="button" class="btn btn-default" ng-disabled="true">
 		<?php echo $this->Html->link(__('Setting mode off'), $path) ?>
 	</button>
 </div>

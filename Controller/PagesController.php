@@ -38,11 +38,18 @@ class PagesController extends PagesAppController {
 			throw new NotFoundException();
 		}
 
-		$containers = $this->__getContainersEachType($page['Container']);
+		$containers = Hash::combine($page['Container'], '{n}.type', '{n}');
+		$boxes = Hash::combine($page['Box'], '{n}.id', '{n}', '{n}.container_id');
+
+		$conditions = array('Frame.box_id' => array_keys($boxes));
+		$frame = $this->Page->Box->Frame->find('all', array('conditions' => $conditions));
+		$frames = Hash::combine($frame, '{n}.Frame.id', '{n}', '{n}.Frame.box_id');
 
 		$this->set('path', $path);
 		$this->set('page', $page);
 		$this->set('containers', $containers);
+		$this->set('boxes', $boxes);
+		$this->set('frames', $frames);
 	}
 
 /**
@@ -54,22 +61,6 @@ class PagesController extends PagesAppController {
 		$pos = strpos($this->request->url, Configure::read('Pages.settingModeWord'));
 
 		return ($pos === 0);
-	}
-
-/**
- * Get containers each type
- *
- * @param array $containers Container record array
- * @return array
- */
-	private function __getContainersEachType($containers) {
-		$containersEachType = array();
-		foreach ($containers as $container) {
-			$type = $container['type'];
-			$containersEachType[$type] = $container;
-		}
-
-		return $containersEachType;
 	}
 
 /**
