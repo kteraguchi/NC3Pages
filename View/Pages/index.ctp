@@ -68,6 +68,10 @@ if (Configure::read('Pages.isSetting')) {
 	echo $this->element('Pages.setting_menu');
 }
 
-echo $this->element('Containers.render_containers', array('containers' => $containers));
+echo $this->element('Containers.render_containers',
+	array(
+		'containers' => $page['Container'],
+		'boxes' => $page['Box']
+	));
 ?>
 </div>

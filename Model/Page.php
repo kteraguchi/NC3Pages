@@ -29,7 +29,10 @@ class Page extends PagesAppModel {
  *
  * @var array
  */
-	public $actsAs = array('Tree');
+	public $actsAs = array(
+		'Tree',
+		'Containable'
+	);
 
 /**
  * Validation rules

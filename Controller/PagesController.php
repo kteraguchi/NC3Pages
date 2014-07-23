@@ -32,24 +32,51 @@ class PagesController extends PagesAppController {
 		$paths = func_get_args();
 		$path = implode('/', $paths);
 
-		$this->Page->hasAndBelongsToMany['Language']['conditions'] = array('Language.code' => 'jpn');
-		$page = $this->Page->findByPermalink($path);
+		$params = array(
+			'conditions' => array(
+				'Page.permalink' => $path
+			),
+			'contain' => array(
+				'Box' => array(
+					'conditions' => array(
+						'BoxesPage.is_visible' => true
+					),
+					'order' => array(
+						'Box.weight'
+					),
+					'Frame' => array(
+						'order' => array(
+							'Frame.weight'
+						),
+						'Language' => array(
+							'conditions' => array(
+								'Language.code' => 'jpn'
+							)
+						)
+					),
+				),
+				'Container' => array(
+					'conditions' => array(
+						'ContainersPage.is_visible' => true
+					)
+				),
+				'Language' => array(
+					'conditions' => array(
+						'Language.code' => 'jpn'
+					)
+				)
+			)
+		);
+		$page = $this->Page->find('first', $params);
 		if (empty($page)) {
 			throw new NotFoundException();
 		}
 
-		$containers = Hash::combine($page['Container'], '{n}.type', '{n}');
-		$boxes = Hash::combine($page['Box'], '{n}.id', '{n}', '{n}.container_id');
-
-		$conditions = array('Frame.box_id' => array_keys($boxes));
-		$frame = $this->Page->Box->Frame->find('all', array('conditions' => $conditions));
-		$frames = Hash::combine($frame, '{n}.Frame.id', '{n}', '{n}.Frame.box_id');
+		$page['Container'] = Hash::combine($page['Container'], '{n}.type', '{n}');
+		$page['Box'] = Hash::combine($page['Box'], '{n}.id', '{n}', '{n}.container_id');
 
 		$this->set('path', $path);
 		$this->set('page', $page);
-		$this->set('containers', $containers);
-		$this->set('boxes', $boxes);
-		$this->set('frames', $frames);
 	}
 
 /**
