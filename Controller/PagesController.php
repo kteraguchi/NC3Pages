@@ -32,42 +32,7 @@ class PagesController extends PagesAppController {
 		$paths = func_get_args();
 		$path = implode('/', $paths);
 
-		$params = array(
-			'conditions' => array(
-				'Page.permalink' => $path
-			),
-			'contain' => array(
-				'Box' => array(
-					'conditions' => array(
-						'BoxesPage.is_visible' => true
-					),
-					'order' => array(
-						'Box.weight'
-					),
-					'Frame' => array(
-						'order' => array(
-							'Frame.weight'
-						),
-						'Language' => array(
-							'conditions' => array(
-								'Language.code' => 'jpn'
-							)
-						)
-					),
-				),
-				'Container' => array(
-					'conditions' => array(
-						'ContainersPage.is_visible' => true
-					)
-				),
-				'Language' => array(
-					'conditions' => array(
-						'Language.code' => 'jpn'
-					)
-				)
-			)
-		);
-		$page = $this->Page->find('first', $params);
+		$page = $this->Page->getPageWithFrame($path);
 		if (empty($page)) {
 			throw new NotFoundException();
 		}

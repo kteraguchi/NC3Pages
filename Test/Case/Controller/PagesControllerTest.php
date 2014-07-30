@@ -82,7 +82,7 @@ class PagesControllerTest extends ControllerTestCase {
  */
 	public function testIndexSetting() {
 		$url = '/' . Configure::read('Pages.settingModeWord') . '/';
-		$assertText = '<div class="modal fade" ' .
+		$needle = '<div class="modal fade" ' .
 			'id="pluginList" ' .
 			'tabindex="-1" ' .
 			'role="dialog" ' .
@@ -90,7 +90,7 @@ class PagesControllerTest extends ControllerTestCase {
 			'aria-hidden="true">';
 
 		$this->testAction($url, array('return' => 'view'));
-		$this->assertTextContains($assertText, $this->view);
+		$this->assertTextContains($needle, $this->view);
 	}
 
 /**

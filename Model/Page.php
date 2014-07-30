@@ -165,6 +165,36 @@ class Page extends PagesAppModel {
 	);
 
 /**
+ * Get page with frame
+ *
+ * @param string $permalink Permalink
+ * @return array
+ */
+	public function getPageWithFrame($permalink) {
+		$query = array(
+			'conditions' => array(
+				'Page.permalink' => $permalink
+			),
+			'contain' => array(
+				'Box' => $this->Box->getContainableQuery(false),
+				'Container' => array(
+					'conditions' => array(
+						// It must check settingmode
+						'ContainersPage.is_visible' => true
+					)
+				),
+				'Language' => array(
+					'conditions' => array(
+						'Language.code' => 'jpn'
+					)
+				)
+			)
+		);	
+
+		return $this->find('first', $query);
+	}
+
+/**
  * Get page ID of top.
  *
  * @return string
