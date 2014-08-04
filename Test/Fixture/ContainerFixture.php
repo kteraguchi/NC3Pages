@@ -78,6 +78,14 @@ class ContainerFixture extends CakeTestFixture {
 			'modified_user_id' => null,
 			'modified' => '2014-05-12 05:04:42'
 		),
+		array(
+			'id' => '6',
+			'type' => '3',
+			'created_user_id' => null,
+			'created' => '2014-05-12 05:04:42',
+			'modified_user_id' => null,
+			'modified' => '2014-05-12 05:04:42'
+		),
 	);
 
 }

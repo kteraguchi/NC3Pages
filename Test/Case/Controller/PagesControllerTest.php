@@ -24,14 +24,15 @@ class PagesControllerTest extends ControllerTestCase {
 	public $fixtures = array(
 		'app.SiteSetting',
 		'app.SiteSettingValue',
-		'plugin.Pages.Room',
-		'plugin.Pages.Page',
-		'plugin.Pages.Box',
-		'plugin.Pages.BoxesPage',
-		'plugin.Pages.Container',
-		'plugin.Pages.ContainersPage',
-		'plugin.Pages.Language',
-		'plugin.Pages.LanguagesPage',
+		'plugin.pages.room',
+		'plugin.pages.page',
+		'plugin.pages.container',
+		'plugin.pages.containers_page',
+		'plugin.pages.languages_page',
+		'plugin.pages.language',
+		'plugin.pages.box',
+		'plugin.pages.boxes_page',
+		'plugin.boxes.plugin'
 	);
 
 /**
@@ -62,7 +63,7 @@ class PagesControllerTest extends ControllerTestCase {
  */
 	public function testPermalink() {
 		$this->testAction('/test', array('return' => 'vars'));
-		$this->assertEquals(2, count($this->vars['page']['Container']));
+		$this->assertEquals(1, count($this->vars['page']['Container']));
 	}
 
 /**

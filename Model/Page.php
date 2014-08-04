@@ -176,7 +176,7 @@ class Page extends PagesAppModel {
 				'Page.permalink' => $permalink
 			),
 			'contain' => array(
-				'Box' => $this->Box->getContainableQuery(false),
+				'Box' => $this->Box->getContainableQueryNotAssociatedPage(),
 				'Container' => array(
 					'conditions' => array(
 						// It must check settingmode
@@ -189,7 +189,7 @@ class Page extends PagesAppModel {
 					)
 				)
 			)
-		);	
+		);
 
 		return $this->find('first', $query);
 	}

@@ -93,7 +93,7 @@ class ContainersPageFixture extends CakeTestFixture {
 		array(
 			'id' => '6',
 			'page_id' => '2',
-			'container_id' => '1',
+			'container_id' => '6',
 			'is_visible' => 1,
 			'created_user_id' => null,
 			'created' => '2014-05-12 05:04:42',

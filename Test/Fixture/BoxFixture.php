@@ -43,6 +43,84 @@ class BoxFixture extends CakeTestFixture {
  * @var array
  */
 	public $records = array(
+		array(
+			'id' => 1,
+			'container_id' => 1,
+			'type' => 1,
+			'space_id' => 1,
+			'room_id' => 1,
+			'page_id' => 1,
+			'weight' => 1,
+			'created_user_id' => 1,
+			'created' => '2014-04-30 06:57:01',
+			'modified_user_id' => 1,
+			'modified' => '2014-04-30 06:57:01'
+		),
+		array(
+			'id' => 2,
+			'container_id' => 2,
+			'type' => 1,
+			'space_id' => 1,
+			'room_id' => 1,
+			'page_id' => 1,
+			'weight' => 1,
+			'created_user_id' => 1,
+			'created' => '2014-04-30 06:57:01',
+			'modified_user_id' => 1,
+			'modified' => '2014-04-30 06:57:01'
+		),
+		array(
+			'id' => 3,
+			'container_id' => 3,
+			'type' => 1,
+			'space_id' => 1,
+			'room_id' => 1,
+			'page_id' => 1,
+			'weight' => 1,
+			'created_user_id' => 1,
+			'created' => '2014-04-30 06:57:01',
+			'modified_user_id' => 1,
+			'modified' => '2014-04-30 06:57:01'
+		),
+		array(
+			'id' => 4,
+			'container_id' => 4,
+			'type' => 1,
+			'space_id' => 1,
+			'room_id' => 1,
+			'page_id' => 1,
+			'weight' => 1,
+			'created_user_id' => 1,
+			'created' => '2014-04-30 06:57:01',
+			'modified_user_id' => 1,
+			'modified' => '2014-04-30 06:57:01'
+		),
+		array(
+			'id' => 5,
+			'container_id' => 5,
+			'type' => 1,
+			'space_id' => 1,
+			'room_id' => 1,
+			'page_id' => 1,
+			'weight' => 1,
+			'created_user_id' => 1,
+			'created' => '2014-04-30 06:57:01',
+			'modified_user_id' => 1,
+			'modified' => '2014-04-30 06:57:01'
+		),
+		array(
+			'id' => 6,
+			'container_id' => 6,
+			'type' => 1,
+			'space_id' => 1,
+			'room_id' => 1,
+			'page_id' => 2,
+			'weight' => 1,
+			'created_user_id' => 1,
+			'created' => '2014-04-30 06:57:01',
+			'modified_user_id' => 1,
+			'modified' => '2014-04-30 06:57:01'
+		),
 	);
 
 }
