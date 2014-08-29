@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Setting menu element.
  *
@@ -11,7 +11,7 @@
 ?>
 
 <script src="/net_commons/jqueryui/jquery-ui.js"></script>
-<link href="/net_commons/jqueryui/themes/base/minified/jquery-ui.min.css" rel="stylesheet">
+<link href="/net_commons/jqueryui/themes/overcast/jquery-ui.min.css" rel="stylesheet">
 
 <div id="settingMenu"  class="panel-body btn-group-vertical" title="Setting menu">
 	<button type="button" class="btn btn-default" ng-click="changePluginSetting()" ng-disabled="true">

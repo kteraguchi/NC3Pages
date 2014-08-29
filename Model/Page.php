@@ -199,7 +199,7 @@ class Page extends PagesAppModel {
  *
  * @return string
  */
-	private function __topPageId() {
+	private function __getTopPageId() {
 		$topPageId = null;
 		$topPage = $this->findByLft('1', array('id'));
 		if (!empty($topPage)) {
@@ -210,26 +210,66 @@ class Page extends PagesAppModel {
 	}
 
 /**
- * Override beforeValidate method
+ * Save page each association model
  *
- * @param array $options Options passed from Model::save().
- * @return boolean True if validate operation should continue, false to abort
+ * @param array $data request data
+ * @return mixed On success Model::$data if its not empty or true, false on failure
  */
-	public function beforeValidate($options = array()) {
-		$this->__setTakingOverData();
+	public function savePage($data) {
+		$this->BoxesPage = ClassRegistry::init('BoxesPage');
+		$this->ContainersPage = ClassRegistry::init('ContainersPage');
 
-		return true;
+		$this->setDataSource('master');
+		$this->Container->setDataSource('master');
+		$this->Box->setDataSource('master');
+		$this->ContainersPage->setDataSource('master');
+		$this->BoxesPage->setDataSource('master');
+
+		$dataSource = $this->getDataSource();
+		$transactionStarted = $dataSource->begin();
+
+		try {
+			$this->set($data);
+			$this->__setReferenceData();
+			$page = $this->save();
+			if (!$page) {
+				throw new Exception();
+			}
+
+			if (!$this->exists()) {
+				if (!$this->__saveContainer()) {
+					throw new Exception();
+				}
+				if (!$this->__saveBox()) {
+					throw new Exception();
+				}
+				if (!$this->__saveContainersPage()) {
+					throw new Exception();
+				}
+				if (!$this->__saveBoxesPage()) {
+					throw new Exception();
+				}
+			}
+
+			$dataSource->commmit();
+		} catch (Exception $e) {
+			CakeLog::error($e->getTraceAsString());
+			$dataSource->rollback();
+			return false;
+		}
+
+		return $page;
 	}
 
 /**
- * Set taking over data before validate.
+ * Set reference data before validate.
  *
  * @return void
  */
-	private function __setTakingOverData() {
+	private function __setReferenceData() {
 		$targetPageId = $this->data['Page']['parent_id'];
 		if (empty($targetPageId)) {
-			$targetPageId = $this->__topPageId();
+			$targetPageId = $this->__getTopPageId();
 		}
 
 		$fields = array(
@@ -241,122 +281,23 @@ class Page extends PagesAppModel {
 			return;
 		}
 
-		$this->data['Page']['room_id'] = $targetPage['Page']['room_id'];
+		$this->set('room_id', $targetPage['Page']['room_id']);
 
-		if (!isset($this->data['Page']['slug'])) {
-			$this->data['Page']['slug'] = '';
+		$slug = $this->data['Page']['slug'];
+		if (!isset($slug)) {
+			$slug = '';
 		}
+		$this->set('slug', $slug);
 
-		$this->data['Page']['permalink'] = '';
+		$permalink = '';
 		if (strlen($targetPage['Page']['permalink']) !== 0) {
-			$this->data['Page']['permalink'] = $targetPage['Page']['permalink'] . '/';
+			$permalink = $targetPage['Page']['permalink'] . '/';
 		}
-		$this->data['Page']['permalink'] .= $this->data['Page']['slug'];
-	}
-
-/**
- * Override beforeSave method.
- *
- * @param array $options Options passed from Model::save().
- * @return boolean True if the operation should continue, false if it should abort
- */
-	public function beforeSave($options = array()) {
-		$dataSource = $this->getDataSource();
-		$dataSource->begin();
-
-		$this->__setDefaultContainers();
+		$permalink .= $slug;
+		$this->set('permalink', $permalink);
 
 		// It should check parts
-		$this->data['Page']['is_published'] = true;
-
-		return true;
-	}
-
-/**
- * Set default containers for page to $this->data
- *
- * @return void
- */
-	private function __setDefaultContainers() {
-		$pageId = $this->__getPageIdOfDefaultContainersPage();
-		if (empty($pageId)) {
-			return;
-		}
-
-		$this->hasAndBelongsToMany['Container']['conditions'] = array(
-			'Container.type !=' => Configure::read('Containers.type.main')
-		);
-		$this->hasAndBelongsToMany['Box']['conditions'] = array(
-			'Box.type !=' => Box::TYPE_WITH_PAGE
-		);
-		$params = array(
-			'conditions' => array(
-				'Page.id' => $pageId
-			)
-		);
-		$pages = $this->find('first', $params);
-		$this->hasAndBelongsToMany['Container']['conditions'] = '';
-		$this->hasAndBelongsToMany['Box']['conditions'] = '';
-		if (empty($pages['Container'])) {
-			return;
-		}
-
-		foreach ($pages['Container'] as $container) {
-			$this->data['Container'][] = array(
-				'id' => $container['ContainersPage']['container_id'],
-				'ContainersPage' => array(
-					'container_id' => $container['ContainersPage']['container_id'],
-					'is_visible' => $container['ContainersPage']['is_visible']
-				)
-			);
-		}
-
-		foreach ($pages['Box'] as $box) {
-			$this->data['Box'][] = array(
-				'id' => $box['BoxesPage']['box_id'],
-				'BoxesPage' => array(
-					'box_id' => $box['BoxesPage']['box_id'],
-					'is_visible' => $box['BoxesPage']['is_visible']
-				)
-			);
-		}
-	}
-
-/**
- * Get page ID of default containers_pages. Return top page ID if it has no parent.
- *
- * @return string
- */
-	private function __getPageIdOfDefaultContainersPage() {
-		if (!empty($this->data['Page']['parent_id'])) {
-			return $this->data['Page']['parent_id'];
-		}
-
-		return $this->__topPageId();
-	}
-
-/**
- * Override beforeSave method.
- *
- * @param boolean $created True if this save created a new record
- * @param array $options Options passed from Model::save().
- * @return void
- */
-	public function afterSave($created, $options = array()) {
-		if (!$created) {
-			return;
-		}
-
-		if (!$this->__saveContainer()) {
-			return;
-		}
-
-		if (!$this->__saveBox()) {
-			return;
-		}
-
-		$dataSource = $this->getDataSource();
-		$dataSource->commit();
+		$this->set('is_published', true);
 	}
 
 /**
@@ -369,15 +310,6 @@ class Page extends PagesAppModel {
 		$data = array(
 			'Container' => array(
 				'type' => Configure::read('Containers.type.main')
-			),
-			'Page' => array(
-				array(
-					'id' => $this->getLastInsertID(),
-					'ContainersPage' => array(
-						'page_id' => $this->getLastInsertID(),
-						'is_visible' => true
-					)
-				)
 			)
 		);
 
@@ -398,19 +330,93 @@ class Page extends PagesAppModel {
 				'space_id' => '1',	// It should modify value
 				'room_id' => $this->data['Page']['room_id'],
 				'page_id' => $this->getLastInsertID()
-			),
-			'Page' => array(
-				array(
-					'id' => $this->getLastInsertID(),
-					'BoxesPage' => array(
-						'page_id' => $this->getLastInsertID(),
-						'is_visible' => true
-					)
-				)
 			)
 		);
 
 		return $this->Box->save($data);
+	}
+
+/**
+ * Save containersPage for page
+ *
+ * @return boolean True on success
+ */
+	private function __saveContainersPage() {
+		$query = array(
+			'conditions' => array(
+				'Page.id' => $this->__getReferencePageId(),
+				'Container.type !=' => Configure::read('Containers.type.main')
+			)
+		);
+		$containersPages = $this->ContainersPage->find('all', $query);
+		$containersPages[] = array(
+			'page_id' => $this->getLastInsertID(),
+			'container_id' => $this->Container->getLastInsertID(),
+			'is_visible' => true
+		);
+
+		foreach ($containersPages as $containersPage) {
+			$data = array(
+				'page_id' => $this->getLastInsertID(),
+				'container_id' => $containersPage['container_id'],
+				'is_visible' => $containersPage['is_visible']
+			);
+
+			$this->ContainersPage->create();
+			if (!$this->ContainersPage->save($data)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+/**
+ * Save boxesPage for page
+ *
+ * @return boolean True on success
+ */
+	private function __saveBoxesPage() {
+		$query = array(
+			'conditions' => array(
+				'Page.id' => $this->__getReferencePageId(),
+				'Box.type !=' => Box::TYPE_WITH_PAGE
+			)
+		);
+		$boxesPages = $this->BoxesPage->find('all', $query);
+		$boxesPages[] = array(
+			'page_id' => $this->getLastInsertID(),
+			'box_id' => $this->Box->getLastInsertID(),
+			'is_visible' => true
+		);
+
+		foreach ($boxesPages as $boxesPage) {
+			$data = array(
+				'page_id' => $this->getLastInsertID(),
+				'box_id' => $boxesPage['box_id'],
+				'is_visible' => $boxesPage['is_visible']
+			);
+
+			$this->BoxesPage->create();
+			if (!$this->BoxesPage->save($data)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+/**
+ * Get Reference page ID. Return top page ID if it has no parent.
+ *
+ * @return string
+ */
+	private function __getReferencePageId() {
+		if (!empty($this->data['Page']['parent_id'])) {
+			return $this->data['Page']['parent_id'];
+		}
+
+		return $this->__getTopPageId();
 	}
 
 }
