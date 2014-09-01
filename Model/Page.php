@@ -216,8 +216,8 @@ class Page extends PagesAppModel {
  * @return mixed On success Model::$data if its not empty or true, false on failure
  */
 	public function savePage($data) {
-		$this->BoxesPage = ClassRegistry::init('BoxesPage');
-		$this->ContainersPage = ClassRegistry::init('ContainersPage');
+		$this->ContainersPage = ClassRegistry::init('Pages.ContainersPage');
+		$this->BoxesPage = ClassRegistry::init('Pages.BoxesPage');
 
 		$this->setDataSource('master');
 		$this->Container->setDataSource('master');
@@ -229,14 +229,13 @@ class Page extends PagesAppModel {
 		$transactionStarted = $dataSource->begin();
 
 		try {
-			$this->set($data);
-			$this->__setReferenceData();
-			$page = $this->save();
+			$exists = $this->exists();
+			$page = $this->__savePage($data);
 			if (!$page) {
 				throw new Exception();
 			}
 
-			if (!$this->exists()) {
+			if (!$exists) {
 				if (!$this->__saveContainer()) {
 					throw new Exception();
 				}
@@ -253,6 +252,9 @@ class Page extends PagesAppModel {
 
 			$dataSource->commmit();
 		} catch (Exception $e) {
+			if (get_class($e) == 'PDOException') {
+				CakeLog::error($e->queryString);
+			}
 			CakeLog::error($e->getTraceAsString());
 			$dataSource->rollback();
 			return false;
@@ -262,11 +264,14 @@ class Page extends PagesAppModel {
 	}
 
 /**
- * Set reference data before validate.
+ * Save page
  *
- * @return void
+ * @param array $data request data
+ * @return mixed On success Model::$data if its not empty or true, false on failure
  */
-	private function __setReferenceData() {
+	private function __savePage($data) {
+		$this->set($data);
+
 		$targetPageId = $this->data['Page']['parent_id'];
 		if (empty($targetPageId)) {
 			$targetPageId = $this->__getTopPageId();
@@ -298,6 +303,8 @@ class Page extends PagesAppModel {
 
 		// It should check parts
 		$this->set('is_published', true);
+
+		return $this->save();
 	}
 
 /**
@@ -344,22 +351,34 @@ class Page extends PagesAppModel {
 	private function __saveContainersPage() {
 		$query = array(
 			'conditions' => array(
-				'Page.id' => $this->__getReferencePageId(),
-				'Container.type !=' => Configure::read('Containers.type.main')
+				'ContainersPage.page_id' => $this->__getReferencePageId()
+			),
+			'contain' => array(
+				'Container' => array(
+					'conditions' => array(
+						'Container.type !=' => Configure::read('Containers.type.main')
+					)
+				)
 			)
 		);
 		$containersPages = $this->ContainersPage->find('all', $query);
-		$containersPages[] = array(
-			'page_id' => $this->getLastInsertID(),
-			'container_id' => $this->Container->getLastInsertID(),
-			'is_visible' => true
-		);
+$sqls = $this->ContainersPage->getDataSource()->getLog();
+debug($sqls['log'][count($sqls['log']) - 1]);
+//var_Dump($sqls);
 
+		$containersPages[] = array(
+			'ContainersPage' => array(
+				'page_id' => $this->getLastInsertID(),
+				'container_id' => $this->Container->getLastInsertID(),
+				'is_visible' => true
+			)
+		);
+var_Dump($containersPages);
 		foreach ($containersPages as $containersPage) {
 			$data = array(
 				'page_id' => $this->getLastInsertID(),
-				'container_id' => $containersPage['container_id'],
-				'is_visible' => $containersPage['is_visible']
+				'container_id' => $containersPage['ContainersPage']['container_id'],
+				'is_visible' => $containersPage['ContainersPage']['is_visible']
 			);
 
 			$this->ContainersPage->create();
@@ -379,8 +398,15 @@ class Page extends PagesAppModel {
 	private function __saveBoxesPage() {
 		$query = array(
 			'conditions' => array(
-				'Page.id' => $this->__getReferencePageId(),
+				'page_id' => $this->__getReferencePageId(),
 				'Box.type !=' => Box::TYPE_WITH_PAGE
+			),
+			'contain' => array(
+				'Container' => array(
+					'conditions' => array(
+						'type !=' => Box::TYPE_WITH_PAGE
+					)
+				)
 			)
 		);
 		$boxesPages = $this->BoxesPage->find('all', $query);
