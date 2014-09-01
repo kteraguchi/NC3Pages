@@ -75,7 +75,7 @@ class PagesController extends PagesAppController {
 	public function add() {
 		if ($this->request->is('post')) {
 			$this->Page->create();
-			$page = $this->Page->save($this->request->data);
+			$page = $this->Page->savePage($this->request->data);
 			if ($page) {
 				$this->Session->setFlash(__('The page has been saved.'));
 				return $this->redirect('/' . Configure::read('Pages.settingModeWord') . '/' . $page['Page']['permalink']);
@@ -85,9 +85,6 @@ class PagesController extends PagesAppController {
 				return $this->redirect('/' . Configure::read('Pages.settingModeWord') . '/' . $page['Page']['permalink']);
 			}
 		}
-
-		//$parentPages = $this->Page->ParentPage->find('list');
-		//$this->set(compact('parentPages'));
 	}
 
 }

@@ -108,14 +108,31 @@ class PagesControllerTest extends ControllerTestCase {
 	public function testAdd() {
 		$controller = $this->generate('Pages.Pages', array(
 			'models' => array(
-				'Pages.Page' => array('save')
+				'Pages.Page' => array('savePage')
 			)
 		));
 		$controller->Page->expects($this->once())
-			->method('save')
+			->method('savePage')
 			->will($this->returnValue(true));
 
 		$this->testAction('/pages/pages/add');
 	}
 
+/**
+ * testAddError method
+ *
+ * @return void
+ */
+	public function testAddError() {
+		$controller = $this->generate('Pages.Pages', array(
+			'models' => array(
+				'Pages.Page' => array('savePage')
+			)
+		));
+		$controller->Page->expects($this->once())
+			->method('savePage')
+			->will($this->returnValue(false));
+
+		$this->testAction('/pages/pages/add');
+	}
 }

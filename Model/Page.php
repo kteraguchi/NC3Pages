@@ -213,6 +213,7 @@ class Page extends PagesAppModel {
  * Save page each association model
  *
  * @param array $data request data
+ * @throws Exception
  * @return mixed On success Model::$data if its not empty or true, false on failure
  */
 	public function savePage($data) {
@@ -250,17 +251,13 @@ class Page extends PagesAppModel {
 				}
 			}
 
-			$dataSource->commmit();
+			$dataSource->commit();
+			return $page;
+
 		} catch (Exception $e) {
-			if (get_class($e) == 'PDOException') {
-				CakeLog::error($e->queryString);
-			}
-			CakeLog::error($e->getTraceAsString());
 			$dataSource->rollback();
 			return false;
 		}
-
-		return $page;
 	}
 
 /**
@@ -272,18 +269,15 @@ class Page extends PagesAppModel {
 	private function __savePage($data) {
 		$this->set($data);
 
-		$targetPageId = $this->data['Page']['parent_id'];
-		if (empty($targetPageId)) {
-			$targetPageId = $this->__getTopPageId();
-		}
+		$referencePageId = $this->__getReferencePageId();
 
 		$fields = array(
 			'room_id',
 			'permalink'
 		);
-		$targetPage = $this->findById($targetPageId, $fields);
+		$targetPage = $this->findById($referencePageId, $fields);
 		if (empty($targetPage)) {
-			return;
+			return false;
 		}
 
 		$this->set('room_id', $targetPage['Page']['room_id']);
@@ -351,21 +345,11 @@ class Page extends PagesAppModel {
 	private function __saveContainersPage() {
 		$query = array(
 			'conditions' => array(
-				'ContainersPage.page_id' => $this->__getReferencePageId()
-			),
-			'contain' => array(
-				'Container' => array(
-					'conditions' => array(
-						'Container.type !=' => Configure::read('Containers.type.main')
-					)
-				)
+				'ContainersPage.page_id' => $this->__getReferencePageId(),
+				'Container.type !=' => Configure::read('Containers.type.main')
 			)
 		);
 		$containersPages = $this->ContainersPage->find('all', $query);
-$sqls = $this->ContainersPage->getDataSource()->getLog();
-debug($sqls['log'][count($sqls['log']) - 1]);
-//var_Dump($sqls);
-
 		$containersPages[] = array(
 			'ContainersPage' => array(
 				'page_id' => $this->getLastInsertID(),
@@ -373,7 +357,7 @@ debug($sqls['log'][count($sqls['log']) - 1]);
 				'is_visible' => true
 			)
 		);
-var_Dump($containersPages);
+
 		foreach ($containersPages as $containersPage) {
 			$data = array(
 				'page_id' => $this->getLastInsertID(),
@@ -398,29 +382,24 @@ var_Dump($containersPages);
 	private function __saveBoxesPage() {
 		$query = array(
 			'conditions' => array(
-				'page_id' => $this->__getReferencePageId(),
+				'BoxesPage.page_id' => $this->__getReferencePageId(),
 				'Box.type !=' => Box::TYPE_WITH_PAGE
-			),
-			'contain' => array(
-				'Container' => array(
-					'conditions' => array(
-						'type !=' => Box::TYPE_WITH_PAGE
-					)
-				)
 			)
 		);
 		$boxesPages = $this->BoxesPage->find('all', $query);
 		$boxesPages[] = array(
-			'page_id' => $this->getLastInsertID(),
-			'box_id' => $this->Box->getLastInsertID(),
-			'is_visible' => true
+			'BoxesPage' => array(
+				'page_id' => $this->getLastInsertID(),
+				'box_id' => $this->Box->getLastInsertID(),
+				'is_visible' => true
+			)
 		);
 
 		foreach ($boxesPages as $boxesPage) {
 			$data = array(
 				'page_id' => $this->getLastInsertID(),
-				'box_id' => $boxesPage['box_id'],
-				'is_visible' => $boxesPage['is_visible']
+				'box_id' => $boxesPage['BoxesPage']['box_id'],
+				'is_visible' => $boxesPage['BoxesPage']['is_visible']
 			);
 
 			$this->BoxesPage->create();

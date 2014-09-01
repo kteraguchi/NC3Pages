@@ -132,8 +132,7 @@ class PageTest extends CakeTestCase {
 		$this->Page->create();
 		$this->Page->savePage($data);
 		$actualPage = $this->Page->findById($this->Page->getLastInsertID());
-var_Dump($actualPage);
-exit;
+
 		$this->assertEquals('test01', $actualPage['Page']['permalink']);
 		$actualContainer = array(
 			$actualPage['Container'][0]['ContainersPage']['container_id'],
@@ -200,7 +199,6 @@ exit;
 
 		$this->Page->create();
 		$actualPage = $this->Page->savePage($data);
-
 		$this->assertEquals('test/test03', $actualPage['Page']['permalink']);
 	}
 }

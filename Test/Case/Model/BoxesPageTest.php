@@ -48,4 +48,12 @@ class BoxesPageTest extends CakeTestCase {
 		parent::tearDown();
 	}
 
+/**
+ * test
+ *
+ * @return void
+ */
+	public function test() {
+	}
+
 }
