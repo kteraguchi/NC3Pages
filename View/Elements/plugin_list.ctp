@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Pages template.
  *
@@ -17,9 +17,12 @@
 				<?php echo __('Plugin list'); ?>
 			</div>
 
-			<div class="modal-body" ng-controller="PluginController">
+			<div class="modal-body"
+				 ng-controller="PluginController"
+				 ng-init="initialize(<?php echo h(json_encode($plugins)); ?>)"
+			>
 				<div class="row">
-					<?php 
+					<?php
 						echo $this->Form->create(
 							null,
 							array(
@@ -37,10 +40,10 @@
 
 						<div class="col-sm-4 col-md-3" ng-repeat="plugin in plugins">
 							<div class="thumbnail">
-								<img  class="img-thumbnail" alt="{{plugin.name}}" ng-src="{{snapshot(plugin.snapshot)}}">
+								<img  class="img-thumbnail" alt="{{plugin.LanguagesPlugin.name}}" ng-src="{{snapshot(plugin.Plugin.snapshot)}}">
 								<div class="text-center">
-									<h3>{{plugin.name}}</h3>
-									<button type="button" class="btn btn-primary" ng-click="selectPlugin(plugin.id)" ng-disabled="{{plugin.disabled}}">
+									<h3>{{plugin.LanguagesPlugin.name}}</h3>
+									<button type="button" class="btn btn-primary" ng-click="selectPlugin(plugin.Plugin.id)">
 										<?php echo __('Add')?>
 									</button>
 								</div>

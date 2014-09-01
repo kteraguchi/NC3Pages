@@ -10,6 +10,7 @@
  */
 
 App::uses('PagesAppController', 'Pages.Controller');
+App::uses('PluginsRoom', 'Rooms.Model');
 
 class PagesController extends PagesAppController {
 
@@ -18,7 +19,10 @@ class PagesController extends PagesAppController {
  *
  * @var array
  */
-	public $uses = array('Pages.Page');
+	public $uses = array(
+		'Pages.Page',
+		'Rooms.PluginsRoom'
+	);
 
 /**
  * index method
@@ -42,6 +46,14 @@ class PagesController extends PagesAppController {
 
 		$this->set('path', $path);
 		$this->set('page', $page);
+
+		//プラグイン追加用のデータ取得
+		if (Configure::read('Pages.isSetting')) {
+			$roomId = 1;
+			$langId = 2;
+			$plugins = $this->PluginsRoom->getPlugins($roomId, $langId);
+			$this->set('plugins', $plugins);
+		}
 	}
 
 /**

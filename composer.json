@@ -28,6 +28,8 @@
         "netcommons/containers":   "dev-master",
         "netcommons/boxes":        "dev-master",
         "netcommons/frames":       "dev-master",
+        "netcommons/menus":        "dev-master",
+        "netcommons/rooms":        "dev-master",
         "mustangostang/spyc":      "dev-master",
         "satooshi/php-coveralls":  "dev-master"
     },

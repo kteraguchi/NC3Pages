@@ -30,32 +30,36 @@
 			<ul class="nav navbar-nav">
 				<li><a href="/"><?php echo __("ホーム"); ?></a></li>
 
-				<li>
-					<?php if ($User = AuthComponent::user()): ?>
+				<?php if ($User = AuthComponent::user()): ?>
+					<li>
 						<?php //echo h($User['handle']) ?>
 						<?php echo $this->Html->link(__('Logout'), '/auth/logout') ?>
-					<?php else: ?>
+					</li>
+					<li <?php
+						if (isset($this->request->params['plugin'])
+							&& $this->request->params['plugin'] == 'ThemeSettings') {
+						echo 'class="active"';
+						}
+					?>>
+						<?php echo $this->Html->link(__('テーマ設定'), '/theme_settings/site/') ?>
+					</li>
+
+					<li>
+						<?php if (!Configure::read('Pages.isSetting')): ?>
+							<?php echo $this->Html->link(__('Setting mode on'), '/' . Configure::read('Pages.settingModeWord') . '/' . $path) ?>
+						<?php else: ?>
+							<?php echo $this->Html->link(__('Setting mode off'), '/' . $path) ?>
+						<?php endif; ?>
+					</li>
+
+					<li>
+						<?php echo $this->Html->link(__('Control Panel'), '/control_panel/index') ?>
+					</li>
+				<?php else: ?>
+					<li>
 						<?php echo $this->Html->link(__('Login'), '/auth/login') ?>
-					<?php endif; ?>
-				</li>
-
-				<li <?php
-					if (isset($this->request->params['plugin'])
-						&& $this->request->params['plugin'] == 'ThemeSettings') {
-					echo 'class="active"';
-					}
-				?>>
-					<?php echo $this->Html->link(__('テーマ設定'), '/theme_settings/site/') ?>
-				</li>
-
-				<li>
-					<?php if (!Configure::read('Pages.isSetting')): ?>
-						<?php echo $this->Html->link(__('Setting mode on'), '/' . Configure::read('Pages.settingModeWord') . '/' . $path) ?>
-					<?php else: ?>
-						<?php echo $this->Html->link(__('Setting mode off'), '/' . $path) ?>
-					<?php endif; ?>
-				</li>
-
+					</li>
+				<?php endif; ?>
 			</ul>
 		</div><!--/.nav-collapse -->
 	</div>

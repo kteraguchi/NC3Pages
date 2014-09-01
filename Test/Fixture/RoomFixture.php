@@ -41,6 +41,17 @@ class RoomFixture extends CakeTestFixture {
  * @var array
  */
 	public $records = array(
+		array(
+			'id' => 1,
+			'group_id' => 1,
+			'space_id' => 1,
+			'type' => 1,
+			'top_page_id' => 1,
+			'created_user_id' => 1,
+			'created' => '2014-06-02 16:18:04',
+			'modified_user_id' => 1,
+			'modified' => '2014-06-02 16:18:04'
+		),
 	);
 
 }

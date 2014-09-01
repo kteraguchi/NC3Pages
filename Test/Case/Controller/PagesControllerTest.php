@@ -34,7 +34,11 @@ class PagesControllerTest extends ControllerTestCase {
 		'plugin.pages.boxes_page',
 		'plugin.pages.frame',
 		'plugin.pages.frames_language',
-		'plugin.boxes.plugin'
+		//'plugin.boxes.plugin',
+		'plugin.pages.plugin',
+		'plugin.pages.languages_plugin',
+		'plugin.pages.plugins_room',
+		'plugin.pages.block',
 	);
 
 /**

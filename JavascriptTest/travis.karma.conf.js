@@ -1,6 +1,12 @@
 // Karma configuration
 // Generated on Fri May 09 2014 18:33:30 GMT+0900 (JST)
 
+
+/**
+ * Karma configuration
+ *
+ * @param {object} config configuration
+ */
 module.exports = function(config) {
   config.set({
 
@@ -15,14 +21,14 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        '../../NetCommons/webroot/angular/angular.min.js',
-        '../../NetCommons/webroot/jquery/jquery.min.js',
-        '../../NetCommons/webroot/angular-bootstrap/ui-bootstrap.min.js',
-        '../../NetCommons/webroot/base/js/base.js',
-        '../../NetCommons/webroot/angular-ui-tinymce/src/tinymce.js',
-        '../../../../vendors/bower_components/angular-mocks/angular-mocks.js',
-        '../webroot/js/pages.js',
-        'spec/javascripts/pages.spec.js'
+      '../../NetCommons/webroot/angular/angular.min.js',
+      '../../NetCommons/webroot/jquery/jquery.min.js',
+      '../../NetCommons/webroot/angular-bootstrap/ui-bootstrap.min.js',
+      '../../NetCommons/webroot/base/js/base.js',
+      '../../NetCommons/webroot/angular-ui-tinymce/src/tinymce.js',
+      '../../../../vendors/bower_components/angular-mocks/angular-mocks.js',
+      '../webroot/js/pages.js',
+      'spec/javascripts/pages.spec.js'
     ],
 
 
@@ -33,9 +39,10 @@ module.exports = function(config) {
 
 
     // preprocess matching files before serving them to the browser
-    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+    // available preprocessors:
+    //                      https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-         //'../js/*.js': 'coverage'
+      //'../js/*.js': 'coverage'
     },
 
 
@@ -54,16 +61,23 @@ module.exports = function(config) {
 
 
     // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+    // possible values:
+    //     config.LOG_DISABLE ||
+    //     config.LOG_ERROR ||
+    //     config.LOG_WARN ||
+    //     config.LOG_INFO ||
+    //     config.LOG_DEBUG
     logLevel: config.LOG_INFO,
 
 
-    // enable / disable watching file and executing tests whenever any file changes
+    // enable / disable watching file and
+    //   executing tests whenever any file changes
     autoWatch: true,
 
 
     // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
+    // available browser launchers:
+    //                      https://npmjs.org/browse/keyword/karma-launcher
     browsers: ['PhantomJS'],
 
 
@@ -73,8 +87,8 @@ module.exports = function(config) {
 
     // optionally, configure the reporter
     coverageReporter: {
-          type : 'html',
-          dir : 'coverage/'
+      type: 'html',
+      dir: 'coverage/'
     }
   });
 };
