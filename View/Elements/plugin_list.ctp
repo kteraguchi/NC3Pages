@@ -3,8 +3,7 @@
  * Pages template.
  *
  * @copyright Copyright 2014, NetCommons Project
- * @author Kohei Teraguchi <kteraguchi@netcommons.org>
- * @since 3.0.0.0
+ * @author Kohei Teraguchi <kteraguchi@commonsnet.org>
  * @link http://www.netcommons.org NetCommons Project
  * @license http://www.netcommons.org/license.txt NetCommons License
  */
@@ -36,14 +35,14 @@
 							*/
 					?>
 						<input name="box_id" type="hidden" ng-model="Frames.box_id">
-						<input name="plugin_id" type="hidden" ng-model="Frames.plugin_id">
+						<input name="plugin_key" type="hidden" ng-model="Frames.plugin_key">
 
 						<div class="col-sm-4 col-md-3" ng-repeat="plugin in plugins">
 							<div class="thumbnail">
-								<img  class="img-thumbnail" alt="{{plugin.LanguagesPlugin.name}}" ng-src="{{snapshot(plugin.Plugin.snapshot)}}">
+								<img  class="img-thumbnail" alt="{{plugin.Plugin.name}}" ng-src="{{snapshot(plugin.Plugin.snapshot)}}">
 								<div class="text-center">
-									<h3>{{plugin.LanguagesPlugin.name}}</h3>
-									<button type="button" class="btn btn-primary" ng-click="selectPlugin(plugin.Plugin.id)">
+									<h3>{{plugin.Plugin.name}}</h3>
+									<button type="button" class="btn btn-primary" ng-click="selectPlugin(plugin.Plugin.key)">
 										<?php echo __('Add')?>
 									</button>
 								</div>

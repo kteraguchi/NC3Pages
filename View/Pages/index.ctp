@@ -6,8 +6,7 @@
  * Pages template.
  *
  * @copyright Copyright 2014, NetCommons Project
- * @author Kohei Teraguchi <kteraguchi@netcommons.org>
- * @since 3.0.0.0
+ * @author Kohei Teraguchi <kteraguchi@commonsnet.org>
  * @link http://www.netcommons.org NetCommons Project
  * @license http://www.netcommons.org/license.txt NetCommons License
  */
@@ -28,7 +27,7 @@
 		</div>
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
-				<li><a href="/"><?php echo __("ホーム"); ?></a></li>
+				<li><a href="/"><?php echo __("Home"); ?></a></li>
 
 				<?php if ($User = AuthComponent::user()): ?>
 					<li>
@@ -41,19 +40,19 @@
 						echo 'class="active"';
 						}
 					?>>
-						<?php echo $this->Html->link(__('テーマ設定'), '/theme_settings/site/') ?>
+						<?php echo $this->Html->link(__('Theme setting'), '/theme_settings/site/') ?>
 					</li>
 
 					<li>
-						<?php if (!Configure::read('Pages.isSetting')): ?>
-							<?php echo $this->Html->link(__('Setting mode on'), '/' . Configure::read('Pages.settingModeWord') . '/' . $path) ?>
+						<?php if (!Page::isSetting()): ?>
+							<?php echo $this->Html->link(__('Setting mode on'), '/' . Page::SETTING_MODE_WORD . '/' . $path) ?>
 						<?php else: ?>
 							<?php echo $this->Html->link(__('Setting mode off'), '/' . $path) ?>
 						<?php endif; ?>
 					</li>
 
 					<li>
-						<?php echo $this->Html->link(__('Control Panel'), '/control_panel/index') ?>
+						<?php //echo $this->Html->link(__('Control Panel'), '/control_panel/index') ?>
 					</li>
 				<?php else: ?>
 					<li>
@@ -67,7 +66,7 @@
 
 <div>
 <?php
-if (Configure::read('Pages.isSetting')) {
+if (Page::isSetting()) {
 	echo $this->element('Pages.plugin_list');
 	echo $this->element('Pages.setting_menu');
 }

@@ -32,9 +32,9 @@ class PluginsRoomFixture extends CakeTestFixture {
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => null),
 		'plugin_id' => array('type' => 'integer', 'null' => false, 'default' => null),
 		'permission' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 4, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'created_user' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
-		'modified_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'modified_user' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1),

@@ -3,8 +3,7 @@
  * PagesController Test Case
  *
  * @copyright Copyright 2014, NetCommons Project
- * @author Kohei Teraguchi <kteraguchi@netcommons.org>
- * @since 3.0.0.0
+ * @author Kohei Teraguchi <kteraguchi@commonsnet.org>
  * @link http://www.netcommons.org NetCommons Project
  * @license http://www.netcommons.org/license.txt NetCommons License
  */
@@ -23,7 +22,6 @@ class PagesControllerTest extends ControllerTestCase {
  */
 	public $fixtures = array(
 		'app.SiteSetting',
-		'app.SiteSettingValue',
 		'plugin.pages.room',
 		'plugin.pages.page',
 		'plugin.pages.container',
@@ -49,6 +47,7 @@ class PagesControllerTest extends ControllerTestCase {
 	public function setUp() {
 		parent::setUp();
 		Configure::write('NetCommons.installed', true);
+		Page::unsetIsSetting();
 	}
 
 /**
@@ -88,7 +87,7 @@ class PagesControllerTest extends ControllerTestCase {
  * @return void
  */
 	public function testIndexSetting() {
-		$url = '/' . Configure::read('Pages.settingModeWord') . '/';
+		$url = '/' . Page::SETTING_MODE_WORD . '/';
 		$needle = '<div class="modal fade" ' .
 			'id="pluginList" ' .
 			'tabindex="-1" ' .

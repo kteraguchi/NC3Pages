@@ -3,8 +3,7 @@
  * PageFixture
  *
  * @copyright Copyright 2014, NetCommons Project
- * @author Kohei Teraguchi <kteraguchi@netcommons.org>
- * @since 3.0.0.0
+ * @author Kohei Teraguchi <kteraguchi@commonsnet.org>
  * @link http://www.netcommons.org NetCommons Project
  * @license http://www.netcommons.org/license.txt NetCommons License
  */
@@ -30,9 +29,9 @@ class PageFixture extends CakeTestFixture {
 		'is_published' => array('type' => 'boolean', 'null' => true, 'default' => null),
 		'from' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'to' => array('type' => 'datetime', 'null' => true, 'default' => null),
-		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'created_user' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
-		'modified_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'modified_user' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1)
@@ -57,9 +56,9 @@ class PageFixture extends CakeTestFixture {
 			'is_published' => 1,
 			'from' => null,
 			'to' => null,
-			'created_user_id' => null,
+			'created_user' => null,
 			'created' => '2014-05-12 05:04:42',
-			'modified_user_id' => null,
+			'modified_user' => null,
 			'modified' => '2014-05-12 05:04:42'
 		),
 		array(
@@ -73,9 +72,9 @@ class PageFixture extends CakeTestFixture {
 			'is_published' => 1,
 			'from' => null,
 			'to' => null,
-			'created_user_id' => null,
+			'created_user' => null,
 			'created' => '2014-05-12 05:04:42',
-			'modified_user_id' => null,
+			'modified_user' => null,
 			'modified' => '2014-05-12 05:04:42'
 		),
 	);

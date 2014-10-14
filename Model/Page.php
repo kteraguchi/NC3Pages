@@ -11,8 +11,7 @@
  * @property Language $Language
  *
  * @copyright Copyright 2014, NetCommons Project
- * @author Kohei Teraguchi <kteraguchi@netcommons.org>
- * @since 3.0.0.0
+ * @author Kohei Teraguchi <kteraguchi@commonsnet.org>
  * @link http://www.netcommons.org NetCommons Project
  * @license http://www.netcommons.org/license.txt NetCommons License
  */
@@ -23,6 +22,18 @@ App::uses('PagesAppModel', 'Pages.Model');
  * Summary for Page Model
  */
 class Page extends PagesAppModel {
+
+/**
+ * constant value
+ */
+	const SETTING_MODE_WORD = 'setting';
+
+/**
+ * is setting mode true
+ *
+ * @var boolean
+ */
+	private static $__isSetting = null;
 
 /**
  * Default behaviors
@@ -142,7 +153,7 @@ class Page extends PagesAppModel {
 			'foreignKey' => 'page_id',
 			'associationForeignKey' => 'container_id',
 			'unique' => 'keepExisting',
-			'conditions' => array('ContainersPage.is_visible' => true),
+			'conditions' => array('ContainersPage.is_published' => true),
 			'fields' => '',
 			'order' => '',
 			'limit' => '',
@@ -165,6 +176,33 @@ class Page extends PagesAppModel {
 	);
 
 /**
+ * Check setting mode
+ *
+ * @return bool
+ */
+	public static function isSetting() {
+		if (isset(self::$__isSetting)) {
+			return self::$__isSetting;
+		}
+
+		$offset = strlen(Router::url('/'));
+		$pos = strpos(Router::url(), self::SETTING_MODE_WORD, $offset);
+		$pos = $pos - $offset;
+		self::$__isSetting = ($pos === 0);
+
+		return self::$__isSetting;
+	}
+
+/**
+ * Unset setting mode value. Use for test.
+ *
+ * @return void
+ */
+	public static function unsetIsSetting() {
+		self::$__isSetting = null;
+	}
+
+/**
  * Get page with frame
  *
  * @param string $permalink Permalink
@@ -180,12 +218,12 @@ class Page extends PagesAppModel {
 				'Container' => array(
 					'conditions' => array(
 						// It must check settingmode
-						'ContainersPage.is_visible' => true
+						'ContainersPage.is_published' => true
 					)
 				),
 				'Language' => array(
 					'conditions' => array(
-						'Language.code' => 'jpn'
+						'Language.code' => 'ja'
 					)
 				)
 			)
@@ -227,7 +265,7 @@ class Page extends PagesAppModel {
 		$this->BoxesPage->setDataSource('master');
 
 		$dataSource = $this->getDataSource();
-		$transactionStarted = $dataSource->begin();
+		$dataSource->begin();
 
 		try {
 			$exists = $this->exists();
@@ -310,7 +348,7 @@ class Page extends PagesAppModel {
 		$this->Container->create();
 		$data = array(
 			'Container' => array(
-				'type' => Configure::read('Containers.type.main')
+				'type' => Container::TYPE_MAIN
 			)
 		);
 
@@ -346,7 +384,7 @@ class Page extends PagesAppModel {
 		$query = array(
 			'conditions' => array(
 				'ContainersPage.page_id' => $this->__getReferencePageId(),
-				'Container.type !=' => Configure::read('Containers.type.main')
+				'Container.type !=' => Container::TYPE_MAIN
 			)
 		);
 		$containersPages = $this->ContainersPage->find('all', $query);
@@ -354,7 +392,7 @@ class Page extends PagesAppModel {
 			'ContainersPage' => array(
 				'page_id' => $this->getLastInsertID(),
 				'container_id' => $this->Container->getLastInsertID(),
-				'is_visible' => true
+				'is_published' => true
 			)
 		);
 
@@ -362,7 +400,7 @@ class Page extends PagesAppModel {
 			$data = array(
 				'page_id' => $this->getLastInsertID(),
 				'container_id' => $containersPage['ContainersPage']['container_id'],
-				'is_visible' => $containersPage['ContainersPage']['is_visible']
+				'is_published' => $containersPage['ContainersPage']['is_published']
 			);
 
 			$this->ContainersPage->create();
@@ -391,7 +429,7 @@ class Page extends PagesAppModel {
 			'BoxesPage' => array(
 				'page_id' => $this->getLastInsertID(),
 				'box_id' => $this->Box->getLastInsertID(),
-				'is_visible' => true
+				'is_published' => true
 			)
 		);
 
@@ -399,7 +437,7 @@ class Page extends PagesAppModel {
 			$data = array(
 				'page_id' => $this->getLastInsertID(),
 				'box_id' => $boxesPage['BoxesPage']['box_id'],
-				'is_visible' => $boxesPage['BoxesPage']['is_visible']
+				'is_published' => $boxesPage['BoxesPage']['is_published']
 			);
 
 			$this->BoxesPage->create();

@@ -38,9 +38,9 @@ NetCommonsApp.controller('PluginController', function($scope, $filter) {
     return '/pages/img/snapshot_noimage.png';
   };
 
-  $scope.selectPlugin = function(pluginId) {
+  $scope.selectPlugin = function(pluginKey) {
     $('#pagesPlugin [name=box_id]').val(ncPutBoxId);
-    $('#pagesPlugin [name=plugin_id]').val(pluginId);
+    $('#pagesPlugin [name=plugin_key]').val(pluginKey);
     $('#pagesPlugin').submit();
   };
 

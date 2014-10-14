@@ -3,8 +3,7 @@
  * RoomFixture
  *
  * @copyright Copyright 2014, NetCommons Project
- * @author Kohei Teraguchi <kteraguchi@netcommons.org>
- * @since 3.0.0.0
+ * @author Kohei Teraguchi <kteraguchi@commonsnet.org>
  * @link http://www.netcommons.org NetCommons Project
  * @license http://www.netcommons.org/license.txt NetCommons License
  */
@@ -25,9 +24,9 @@ class RoomFixture extends CakeTestFixture {
 		'space_id' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'type' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'top_page_id' => array('type' => 'integer', 'null' => true, 'default' => null),
-		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'created_user' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
-		'modified_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'modified_user' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1)
@@ -47,9 +46,9 @@ class RoomFixture extends CakeTestFixture {
 			'space_id' => 1,
 			'type' => 1,
 			'top_page_id' => 1,
-			'created_user_id' => 1,
+			'created_user' => 1,
 			'created' => '2014-06-02 16:18:04',
-			'modified_user_id' => 1,
+			'modified_user' => 1,
 			'modified' => '2014-06-02 16:18:04'
 		),
 	);
